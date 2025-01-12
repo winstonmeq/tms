@@ -2,6 +2,7 @@ import "@/app/globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import Navbar from "@/components/navbar";
 import MunListPage from "./munlist/page";
+import { Analytics } from "@vercel/analytics/react"
 
 
 
@@ -20,6 +21,8 @@ export default function RootLayout({
             </div>
 
           <Toaster />
+          <Analytics />
+
             
         </div>
         

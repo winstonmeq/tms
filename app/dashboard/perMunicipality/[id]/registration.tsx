@@ -11,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { z } from "zod";
 
 const RegistrationPage = ({
   onClose,
@@ -59,7 +58,6 @@ const RegistrationPage = ({
 
   const [barangays, setBarangays] = useState<Barangay[]>([]);
   const [loading, setLoading] = useState(true);
-  const [progress, setProgress] = useState(0);
   const [munId, setMunId] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
@@ -104,7 +102,6 @@ const RegistrationPage = ({
         console.error("Error fetching municipality:", error);
       } finally {
         setLoading(false);
-        setProgress(100);
       }
     };
     fetchMunicipality();

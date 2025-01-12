@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 // GET /api/record/[id]
-export async function GET(request: NextRequest, response: NextResponse) {
+export async function GET(request: NextRequest) {
  
 
   try {

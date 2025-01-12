@@ -31,31 +31,31 @@ export default function UploadPage() {
   };
 
 
-  const saveToDatabase = async () => {
-    try {
-      const parsedData = JSON.parse(jsonData); // Parse JSON string to an array of objects
+  // const saveToDatabase = async () => {
+  //   try {
+  //     const parsedData = JSON.parse(jsonData); // Parse JSON string to an array of objects
   
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(parsedData), // Send the parsed JSON data
-      });
+  //     const response = await fetch("/api/upload", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(parsedData), // Send the parsed JSON data
+  //     });
   
-      if (response.ok) {
-        setMessage("Data successfully saved!");
-      } else {
-        const errorData = await response.json();
-        setMessage("Failed to save data: " + errorData.message || "Unknown error.");
-      }
-    } catch (error: unknown) {
-      // Ensure `error` is an object and has a `message` property
-      if (error instanceof Error) {
-        setMessage("Error: " + error.message);
-      } else {
-        setMessage("An unknown error occurred.");
-      }
-    }
-  };
+  //     if (response.ok) {
+  //       setMessage("Data successfully saved!");
+  //     } else {
+  //       const errorData = await response.json();
+  //       setMessage("Failed to save data: " + errorData.message || "Unknown error.");
+  //     }
+  //   } catch (error: unknown) {
+  //     // Ensure `error` is an object and has a `message` property
+  //     if (error instanceof Error) {
+  //       setMessage("Error: " + error.message);
+  //     } else {
+  //       setMessage("An unknown error occurred.");
+  //     }
+  //   }
+  // };
 
 
   const save_bulk_voter = async () => {

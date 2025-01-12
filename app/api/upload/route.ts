@@ -30,8 +30,8 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ message: "Data saved successfully!" }, { status: 200 });
-  } catch (error: any) {
-    console.error("Error saving data:", error.message);
-    return NextResponse.json({ error: error.message || "Failed to save data." }, { status: 500 });
+  } catch (error) {
+    console.error("Error saving data:", error);
+    return NextResponse.json({ error: error || "Failed to save data." }, { status: 500 });
   }
 }

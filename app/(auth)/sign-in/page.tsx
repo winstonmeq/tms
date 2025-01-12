@@ -23,13 +23,11 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 
 import { ErrorContext } from "@better-fetch/fetch";
-import { GithubIcon } from "lucide-react";
 
 export default function SignIn() {
 	const router = useRouter();
 	const { toast } = useToast();
 	const [pendingCredentials, setPendingCredentials] = useState(false);
-	const [pendingGithub, setPendingGithub] = useState(false);
 
 	const form = useForm<z.infer<typeof signInSchema>>({
 		resolver: zodResolver(signInSchema),
@@ -68,30 +66,7 @@ export default function SignIn() {
 		setPendingCredentials(false);
 	};
 
-	const handleSignInWithGithub = async () => {
-		await authClient.signIn.social(
-			{
-				provider: "github",
-			},
-			{
-				onRequest: () => {
-					setPendingGithub(true);
-				},
-				onSuccess: async () => {
-					router.push("/");
-					router.refresh();
-				},
-				onError: (ctx: ErrorContext) => {
-					toast({
-						title: "Something went wrong",
-						description: ctx.error.message ?? "Something went wrong.",
-						variant: "destructive",
-					});
-				},
-			}
-		);
-		setPendingGithub(false);
-	};
+	
 
 	return (
 		<div className="grow flex items-center justify-center p-4">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   ColumnDef,
   flexRender,
@@ -176,7 +176,6 @@ export function DataTable({ userIdd }: { userIdd: string }) {
   const [municipality, setMunicipality] = useState<Municipality>(); 
 
   const [loading, setLoading] = useState(true); // Track loading state
-  const [progress, setProgress] = useState(0); // Progress state for the loading bar
   const [searchLastName, setSearchLastName] = useState("");
   const [data, setData] = useState<Voter[]>(voters);
   const [searchbar, setSearchBar] = useState("")
@@ -191,14 +190,8 @@ export function DataTable({ userIdd }: { userIdd: string }) {
   }, []);
 
 
-  // Fetch patients from the API endpoint
-  const fetchMunicipality = async () => {
-
-    // const munId = window.location.pathname.split("/").pop();
-
-
-    setLoading(true) 
-
+  const fetchMunicipality = useCallback(async () => {
+    setLoading(true);
 
     try {
       const response = await fetch(`/api/perMunicipality/${munId}`);
@@ -207,22 +200,20 @@ export function DataTable({ userIdd }: { userIdd: string }) {
 
         setVoters(responseData.voter);
         setMunicipality(responseData);
-        
       } else {
-        console.error("Failed to fetch patient data");
+        console.error("Failed to fetch municipality data");
       }
     } catch (error) {
-      console.error("Error fetching patients:", error);
+      console.error("Error fetching municipality:", error);
     } finally {
-      setLoading(false); // Stop loading once the fetch is done
-      setProgress(100); // Complete the progress bar
+      setLoading(false);
     }
-  };
+  }, [munId]);
 
   useEffect(() => {
     if (!munId) return;
     fetchMunicipality();
-  }, [munId]);
+  }, [munId, fetchMunicipality]);
 
   useEffect(() => {
     const filteredData = voters.filter((voter) =>

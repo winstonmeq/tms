@@ -21,8 +21,6 @@ const AllMunicipalityPage = async () => {
     return redirect('/sign-in')
   }
 
-  const user = session?.user;
-
 
   return (
     <div>

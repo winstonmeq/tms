@@ -18,8 +18,6 @@ const VotersPage = async () => {
     return redirect('/dashboard/')
   }
 
-  const user = session?.user;
-
 
   return (
     <div className="container mx-auto py-10">

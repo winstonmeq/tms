@@ -19,13 +19,13 @@ const CoordinatorPage = async () => {
     return redirect('/sign-in')
   }
 
-  const user = session?.user;
+  // const user = session?.user;
 
 
   return (
     <div className="container mx-auto py-10">
       <h1 className="text-2xl font-bold mb-5">All Coordinator </h1>
-      <DataTable userIdd={user.id} />
+      <DataTable />
     </div>
   )
 }

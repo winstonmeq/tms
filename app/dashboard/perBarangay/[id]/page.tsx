@@ -21,13 +21,13 @@ const PerBarangayPage = async () => {
     return redirect('/sign-in/')
   }
 
-  const user = session?.user;
+  // const user = session?.user;
 
 
   return (
     <div className="container mx-auto py-10">
       Per Barangay
-      <DataTable userIdd={user.id} />
+      <DataTable />
     </div>
   )
 }

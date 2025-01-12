@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 // GET /api/record/[id]
-export async function GET(request: NextRequest, response: NextResponse) {
+export async function GET(request: NextRequest) {
  
   try {
     const id = request.nextUrl.pathname.split('/voters/')[1];
@@ -39,18 +39,18 @@ export async function GET(request: NextRequest, response: NextResponse) {
   }
 }
 
-export async function main() {
-  try {
-    await prisma.$connect();
-  } catch (err) {
-    return Error("Database Connection Unsuccessull");
-  }
-}
+// export async function main() {
+//   try {
+//     await prisma.$connect();
+//   } catch  {
+//     return Error("Database Connection Unsuccessull");
+//   }
+// }
 
-export const PUT = async (request: Request, response: NextResponse) => {
+export const PUT = async (request: NextRequest) => {
 
   try {
-    await main();
+    // await main();
     const id = request.url.split("/voters/")[1];
     const data = await request.json()    
     const {fname, lname, mname, prkname, member,userId, coorId,barId,munId } = data

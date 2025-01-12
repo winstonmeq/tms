@@ -18,14 +18,6 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -37,7 +29,6 @@ import {
 } from "@/components/ui/select"
 
 
-import Link from "next/link"
 
 
 
@@ -88,9 +79,8 @@ export const columns: ColumnDef<perBarangayData>[] = [
 
 
 
-export function DataTable({userIdd}:{userIdd:string}) {
+export function DataTable() {
 
-  const munId = window.location.pathname.split('/').pop();
 
 
   const [perBarangay, setPerBarangay] = useState<perBarangayData[]>([]) // Apply the Patient type here

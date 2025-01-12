@@ -1,23 +1,13 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { motion, progress } from 'framer-motion'
+import { motion} from 'framer-motion'
 import Link from 'next/link'
 import { NotebookPen, } from 'lucide-react'
 
 
 
-const Mun = [
-  {
-  id:"sdfsdfsf",
-  munname:"Kidapawan City"
-},
-{
-  id:"dsfsfsfsdf",
-  munname:"President Roxas"
-}
 
-]
 
 
 export type Municipality = {

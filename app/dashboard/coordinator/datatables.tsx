@@ -29,10 +29,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { AArrowUpIcon } from "lucide-react"
-
-
-
 
 export type Coordinator = {
   id: string
@@ -115,11 +111,10 @@ export const columns: ColumnDef<Coordinator>[] = [
 
 
 
-export function DataTable({userIdd}:{userIdd:string}) {
+export function DataTable() {
 
   const [coordinators, setCoordinators] = useState<Coordinator[]>([]) // Apply the Patient type here
   const [loading, setLoading] = useState(true) // Track loading state
-  const [progress, setProgress] = useState(0) // Progress state for the loading bar
   const [searchLastName, setSearchLastName] = useState('')
   const [data, setData] = useState<Coordinator[]>(coordinators)
   const [searchmun, setSearchMun] = useState("")

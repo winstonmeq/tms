@@ -1,8 +1,7 @@
+
+
 import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
-import { betterAuth } from "better-auth";
-import { headers } from "next/headers";
-
 
 
 const prisma = new PrismaClient()
@@ -43,7 +42,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ message: 'Voters saved successfully', voters }, { status: 201 })
 
-  } catch (error) {
+  } catch {
 
     return NextResponse.json({ error: 'Failed  dddddddd data' }, { status: 500 })
 

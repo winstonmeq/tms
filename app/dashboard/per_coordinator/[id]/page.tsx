@@ -3,7 +3,7 @@
 
 
 import React from 'react'
-import { DataTable } from './datatables'
+import { DataTable } from './data_table'
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -21,13 +21,12 @@ const PerCoordinatorPage = async () => {
     return redirect('/sign-in/')
   }
 
-  // const user = session?.user;
+  const user = session?.user;
 
 
   return (
     <div className="container mx-auto py-10">
-      Per Coordinator
-      <DataTable />
+       <DataTable userId={user.id} />
     </div>
   )
 }

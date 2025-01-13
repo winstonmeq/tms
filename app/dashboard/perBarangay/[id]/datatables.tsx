@@ -130,7 +130,7 @@ const data: perBarangayData[] = perBarangay
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {
-        pageSize: 5,
+        pageSize: 50,
       },
     },
   })

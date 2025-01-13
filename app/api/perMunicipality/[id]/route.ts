@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
 
     const id = request.url.split("/perMunicipality/")[1]
 
-    // console.log('perMun',id)
+    console.log('perMun',id)
 
     if (id) {
 

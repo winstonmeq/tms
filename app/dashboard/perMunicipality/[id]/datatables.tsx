@@ -181,7 +181,6 @@ export function DataTable({ userIdd }: { userIdd: string }) {
   const [searchbar, setSearchBar] = useState("")
   const [munId, setMunId] = useState<string | null>(null);
 
-  // const munId = window.location.pathname.split("/").pop();
 
 
   useEffect(() => {
@@ -237,7 +236,7 @@ export function DataTable({ userIdd }: { userIdd: string }) {
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {
-        pageSize: 5,
+        pageSize: 50,
       },
     },
   });
@@ -252,7 +251,7 @@ export function DataTable({ userIdd }: { userIdd: string }) {
                   </div>
                 
               
-              <div>
+              <div className="gap-3">
               <Link href={`/dashboard/perBarangay/${munId}`}>
                         <Button
                           variant="outline"
@@ -260,7 +259,16 @@ export function DataTable({ userIdd }: { userIdd: string }) {
                         >
                           All Barangays
                         </Button>
-                      </Link>
+              </Link>
+
+              <Link href={`/dashboard/per_coordinator/${munId}`}>
+                        <Button
+                          variant="outline"
+                          className="bg-green-900 text-white hover:bg-green-700"
+                        >
+                          Coordinators
+                        </Button>
+              </Link>
               </div>
             
       </div>

@@ -28,6 +28,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+import { Progress } from "@/components/ui/progress"
+
 
 
 
@@ -60,6 +62,29 @@ export const columns: ColumnDef<perBarangayData>[] = [
   {
     accessorKey: "barname",
     header: "Barangay",
+  },
+
+  {
+    accessorKey: "progress",
+    header: "Progress",
+    cell: ({ row }) => {
+      // Calculate the progress percentage
+      const percentage =
+        Number(row.original.memberCount) > 0
+          ? (Number(row.original.memberCount) / Number(row.original.voterCount)) * 100
+          : 0;
+
+      return (
+        <div className="flex flex-col items-start space-y-2 mr-4">
+          <div className="flex justify-between w-full">
+            <span className="text-sm text-gray-600">
+              {row.original.memberCount}/{row.original.voterCount}
+            </span>
+          </div>
+          <Progress value={percentage} className="h-4 bg-yellow-300 rounded" />
+        </div>
+      );
+    },
   },
  
   {
@@ -139,7 +164,7 @@ const data: perBarangayData[] = perBarangay
   return (
     <div >
       
-    
+       <div className=" text-2xl font-bold">{perBarangay[0]?.munname}: Proportion of recruited members to total members</div>
       <div className="rounded-md border">
 
       {loading && (

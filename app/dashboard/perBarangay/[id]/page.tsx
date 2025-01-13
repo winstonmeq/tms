@@ -26,7 +26,6 @@ const PerBarangayPage = async () => {
 
   return (
     <div className="container mx-auto py-10">
-      Per Barangay
       <DataTable />
     </div>
   )

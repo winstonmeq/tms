@@ -40,6 +40,7 @@ import {
 
 import RegistrationPage from "./registration";
 import Link from "next/link";
+import BarGraph from "./barchart";
 
 interface Voter {
   id: string;
@@ -180,6 +181,9 @@ export function DataTable({ userIdd }: { userIdd: string }) {
   const [data, setData] = useState<Voter[]>(voters);
   const [searchbar, setSearchBar] = useState("")
   const [munId, setMunId] = useState<string | null>(null);
+  const [t_data, setT_data] = useState(0)
+  const [y_data, setY_data] = useState(0)
+  const [th_data, setTh_data] = useState(0)
 
 
 
@@ -197,8 +201,11 @@ export function DataTable({ userIdd }: { userIdd: string }) {
       if (response.ok) {
         const responseData = await response.json();
 
-        setVoters(responseData.voter);
-        setMunicipality(responseData);
+        setVoters(responseData.record.voter);
+        setMunicipality(responseData.record);
+        setT_data(responseData.today)
+        setY_data(responseData.oneDayAgo)
+        setTh_data(responseData.twoDaysAgo)
       } else {
         console.error("Failed to fetch municipality data");
       }
@@ -243,8 +250,8 @@ export function DataTable({ userIdd }: { userIdd: string }) {
 
   return (
     <div> 
-      <div className="flex flex-row justify-between items-center ">
-              
+      <div className="flex flex-row justify-center"><BarGraph t_data={t_data} y_data={y_data} threeData={th_data} /></div>
+      <div className="flex flex-row justify-between items-center ">              
                 
                   <div className="text-2xl font-bold">
                     Municipality: {municipality?.munname}

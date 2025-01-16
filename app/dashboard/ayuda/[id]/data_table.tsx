@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect} from "react";
 import {
   ColumnDef,
   flexRender,
@@ -8,6 +8,8 @@ import {
   useReactTable,
   getPaginationRowModel,
 } from "@tanstack/react-table";
+
+import { useRouter } from "next/navigation";
 
 import {
   Table,
@@ -19,7 +21,6 @@ import {
 } from "@/components/ui/table";
 
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
 
 import {
   Dialog,
@@ -29,19 +30,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import CoorRegistrationPage from "./coor_registration";
-import UpdateCoordinatorPage from "./update_coordinator";
-import Link from "next/link";
+import AyudaRegistrationPage from "./ayuda_registration";
 
-interface per_coordinator {
+interface Ayuda {
   id: string;
   userId: string;
-  fname: string;
-  lname: string;
-  mname: string;
-  prkname: string;
-  phone: string;
-  position: string;
+  ayuda_name: string;
+  ayuda_code: string;
+  ayuda_type: string;
+  ayuda_purpose: string;
   bar: {
     id: string;
     barname: string;
@@ -54,115 +51,108 @@ interface per_coordinator {
 
 
 export function DataTable({ userId }: { userId: string }) {
-    const [coordinators, setCoordinators] = useState<per_coordinator[]>([]);
-    const [totalCoor, setTotalCoor] = useState("");
+
+    const [ayuda, setAyuda] = useState<Ayuda[]>([]);
+    const [totalRecords, setTotalRecords] = useState(0);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [dialogData, setDialogData] = useState<per_coordinator | null>(null);
+    // const [dialogData, setDialogData] = useState<per_coordinator | null>(null);
   
 
 
 
+  const router = useRouter()
 
 
-    const router = useRouter()
 
 
-
-    const fetchMunicipality = async () => {
-
+    const fetchAyuda= async () => {
       const munId = window.location.pathname.split("/").pop();
   
       setLoading(true);
   
       try {
-        const response = await fetch(`/api/per_coordinator/${munId}`);
+        const response = await fetch(`/api/ayuda/${munId}`);
   
         if (response.ok) {
+
           const data = await response.json();
-          setCoordinators(data.coordinator_data);
-          setTotalCoor(data.totalRecords);
+
+          setAyuda(data.ayuda_data);
+
+          setTotalRecords(data.totalRecords);
+
+          setLoading(false);
+
+
         } else {
+
           console.error("Failed to fetch data");
+
         }
       } catch (error) {
+
         console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
+
+      } 
+
     };
   
     useEffect(() => {
-      fetchMunicipality();
+      fetchAyuda();
     }, []);
   
     const handleSave = async () => {
-      await fetchMunicipality();
+      await fetchAyuda();
       setIsModalOpen(false); // Close modal after saving
     };
   
-    const openDialog = (coordinator: per_coordinator) => {
-      setDialogData(coordinator);
-    };
   
-    const closeDialog = () => {
-      setDialogData(null);
-    };
   
-    const columns: ColumnDef<per_coordinator>[] = [
+    const columns: ColumnDef<Ayuda>[] = [
       {
         accessorKey: "id",
         header: "Index",
         cell: ({ row }) => <>{row.index + 1}</>,
       },
       {
-        accessorKey: "fname",
-        header: "First Name",
+        accessorKey: "ayuda_name",
+        header: "Ayuda Name",
         cell: ({ row }) => {
-          const coordinator = row.original;
+          const ayuda = row.original;
   
           return (
-            <span
-              className="text-blue-500 cursor-pointer"
-              onClick={() => openDialog(coordinator)}
-            >
-              {coordinator.fname}
-            </span>
+          <span>{ayuda.ayuda_name}</span>
           );
         },
       },
       {
-        accessorKey: "lname",
-        header: "Last Name",
+        accessorKey: "ayuda_code",
+        header: "Code",
       },
       {
-        accessorKey: "phone",
-        header: "Phone",
+        accessorKey: "ayuda_type",
+        header: "Type",
       },
       {
-        accessorKey: "position",
-        header: "Position",
+        accessorKey: "ayuda_purpose",
+        header: "Purpose",
       },
+
+      {
+        accessorKey: "municipality.munname",
+        header: "Municipality",
+      },
+
       {
         accessorKey: "bar.barname",
         header: "Barangay",
       },
-      {
-        accessorKey: "prkname",
-        header: "Purok Name",
-      },
-
-      {
-        header: "Action",    
-        cell: ({ row }) => {
-          const id = row.getValue("id")
-          return <Link  href={`/dashboard/coordinator_voter/${id}`}><div className="font-semibold"><Button variant="outline">Members</Button></div></Link>;  // Replace '/somepath/${id}' with your desired link URL
-        },
-      },
+     
     ];
   
     const table = useReactTable({
-      data: coordinators,
+      data: ayuda,
       columns,
       getCoreRowModel: getCoreRowModel(),
       getPaginationRowModel: getPaginationRowModel(),
@@ -175,27 +165,24 @@ export function DataTable({ userId }: { userId: string }) {
   
     return (
       <div>
-        <div className="flex flex-row justify-between gap-3 pb-4">
-          <div className="flex">
-            
-              <div className="text-xl font-bold items-center">
-                Municipality of: {coordinators[0]?.municipality?.munname}
-              </div>
+        <div className="flex flex-row justify-between gap-3">
+          <div className="text-xl font-bold">
+            Municipality of: {ayuda[0]?.municipality?.munname}
           </div>
           <div className="flex gap-3">
           <Button onClick={()=>{router.back()}}>Back</Button>
           <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
             <DialogTrigger asChild>
-              <Button>Add Coordinator</Button>
+              <Button>Create Ayuda</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[525px]">
               <DialogHeader>
-                <DialogTitle>Coordinator Registration</DialogTitle>
+                <DialogTitle>Create Ayuda </DialogTitle>
               </DialogHeader>
               <DialogDescription>
-                Fill out the form below to register a new coordinator.
+                Fill out the form below to create ayuda.
               </DialogDescription>
-              <CoorRegistrationPage
+              <AyudaRegistrationPage
                 onClose={() => setIsModalOpen(false)}
                 onSaveSuccess={handleSave}
                 userId={userId}
@@ -204,7 +191,7 @@ export function DataTable({ userId }: { userId: string }) {
           </Dialog>
           </div>
         </div>
-        <div>Total Coordinator: {totalCoor}</div>
+        <div>Total Ayuda: {totalRecords}</div>
         <div className="rounded-md border">
           {loading && (
             <div className="absolute inset-0 flex justify-center items-center">
@@ -255,31 +242,7 @@ export function DataTable({ userId }: { userId: string }) {
             </TableBody>
           </Table>
         </div>
-        {dialogData && (
-          <Dialog open={!!dialogData} onOpenChange={closeDialog}>
-            <DialogContent className="sm:max-w-[525px]">
-              <DialogHeader>
-                <DialogTitle>Update Coordinator</DialogTitle>
-              </DialogHeader>
-              <DialogDescription>
-                Update the details for {dialogData.fname} {dialogData.lname}.
-              </DialogDescription>
-              <UpdateCoordinatorPage
-                onClose={closeDialog}
-                onSaveSuccess={handleSave}
-                userId={dialogData.userId}
-                fname={dialogData.fname}
-                lname={dialogData.lname}
-                phone={dialogData.phone}
-                prkname={dialogData.prkname}
-                position={dialogData.position}
-                barId={dialogData.bar?.id}
-                munId={dialogData.municipality?.id}
-                coorId={dialogData.id}
-              />
-            </DialogContent>
-          </Dialog>
-        )}
+       
       </div>
     );
   }

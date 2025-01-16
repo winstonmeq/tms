@@ -75,6 +75,14 @@ export async function GET(request: NextRequest) {
       },
     });
 
+    const yes_count = record?.voter.filter((voter) => voter.member === 'Yes').length
+    const OFW_count = record?.voter.filter((voter) => voter.member === 'OFW').length
+    const possible_count = record?.voter.filter((voter) => voter.member === 'Possible').length
+    const no_count = record?.voter.filter((voter) => voter.member === 'Not').length
+    const deceased_count = record?.voter.filter((voter) => voter.member === 'Deceased').length
+    const undecided_count = record?.voter.filter((voter) => voter.member === 'Undecided').length
+
+
     if (!record) {
       return NextResponse.json({ message: 'Municipality not found' }, { status: 404 });
     }
@@ -85,6 +93,7 @@ export async function GET(request: NextRequest) {
       today: recordsToday.length,
       oneDayAgo: recordsYesterday.length,
       twoDaysAgo: recordsTwoDaysAgo.length,
+      yes_count, OFW_count, possible_count, no_count, deceased_count, undecided_count
     };
 
     return NextResponse.json(jsonResponse);

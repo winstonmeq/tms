@@ -31,7 +31,7 @@ const BarGraph = ({ t_data, y_data, threeData }: BarGraphProps) => {
   return (
     <Card>
     
-      <CardContent style={{ height: '130px', padding:'5px', margin:'0px' }}>
+      <CardContent style={{ height: '180px', padding:'5px', margin:'0px' }}>
         <Bar data={chartData}  />
       </CardContent>
     </Card>

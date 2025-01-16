@@ -237,7 +237,13 @@ const RegistrationPage = ({
                  <SelectContent>
                   
                      <SelectItem  value="Yes">Yes</SelectItem>
-                     <SelectItem  value="No">No</SelectItem>
+                     <SelectItem  value="OFW">OFW</SelectItem>
+                     <SelectItem  value="Deceased">Deceased</SelectItem>
+                     <SelectItem  value="Undecided">Undecided</SelectItem>
+                     <SelectItem  value="Possible">Possible?</SelectItem>
+                     <SelectItem  value="Not">Not</SelectItem>
+
+
                    
                  </SelectContent>
                </Select>

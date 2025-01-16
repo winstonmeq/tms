@@ -59,9 +59,8 @@ export const columns: ColumnDef<Voter>[] = [
     header: "First Name",    
     cell: ({ row }) => {
       const id = row.getValue("id")
-      const munId = row.getValue("munId")
       const fname = row.getValue("fname") as string
-      return <Link href={`/dashboard/voters/${id}&&${munId}`}>{fname}</Link>;  // Replace '/somepath/${id}' with your desired link URL
+      return <Link href={`/dashboard/voters/${id}`}>{fname}</Link>;  // Replace '/somepath/${id}' with your desired link URL
     },
   },
   {
@@ -76,20 +75,13 @@ export const columns: ColumnDef<Voter>[] = [
     accessorKey: "prkname",
     header: "Purok Name",
   },
-  {
-    accessorKey: "member",
-    header: "Member",
-  },
-
+ 
   {
     accessorKey: "bar.barname",
     header: "Barangay",
   },
 
-  {
-    accessorKey: "coor.lname",
-    header: "Coordinator"
-  },
+ 
 ]
 
 
@@ -113,14 +105,21 @@ const [totalRecords, setTotalRecords] = useState(0);
 useEffect(() => {
   
 // Fetch patients from the API endpoint
-const fetchVoters = async () => {
+const fetch_coor_voter = async () => {
+
+  const coorId = window.location.pathname.split("/").pop();
+
+
   try {
-    const response = await fetch(`/api/voters?page=${page}&limit=${pageSize}`)
-    if (response.ok && response.body) {
-      const {voters, totalRecords} = await response.json()
-     
-      setVoters(voters)
-      setTotalRecords(totalRecords);
+
+    const response = await fetch(`/api/coordinator_voter/${coorId}?page=${page}&limit=${pageSize}`)
+    
+    if (response.ok) {
+    
+      const data = await response.json()
+      
+      setVoters(data.coor_voter)
+      setTotalRecords(data.totalRecords);
 
 
     } else {
@@ -133,7 +132,7 @@ const fetchVoters = async () => {
   }
 }
 
-fetchVoters();
+fetch_coor_voter();
 
 }, [page, pageSize])
 
@@ -161,16 +160,7 @@ useEffect(() => {
     },
   })
 
-  // if (loading) {
-  //   return <div>
-  //       {loading && (
-  //       <div className="absolute inset-0 flex justify-center items-center bg-white bg-opacity-50 z-50">
-  //         <div className="w-16 h-16 border-4 border-t-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div> 
-  //       </div>
-  //     )}
 
-  //   </div>;
-  // }
 
   return (
     <div >

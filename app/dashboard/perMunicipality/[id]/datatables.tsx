@@ -41,6 +41,7 @@ import {
 import RegistrationPage from "./registration";
 import Link from "next/link";
 import BarGraph from "./barchart";
+import  { Component } from "./circular_chart";
 
 interface Voter {
   id: string;
@@ -109,19 +110,6 @@ interface Municipality {
 
 }
 
-// interface Coordinator {
-//   id: string;
-//   userId: string;
-//   fname: string;
-//   lname: string;
-//   phone: string;
-//   prkname: string;
-//   position: string;
-//   barId: string;
-//   munId: string;
-//   createdAt: string;
-//   updatedAt: string;
-// }
 
 export const columns: ColumnDef<Voter>[] = [
   {
@@ -137,8 +125,11 @@ export const columns: ColumnDef<Voter>[] = [
     header: "First Name",
     cell: ({ row }) => {
       const id = row.getValue("id");
+      const vts = row.original
+      const munId = vts.munId
+
       const fname = row.getValue("fname") as string;
-      return <Link href={`/dashboard/voters/${id}`}>{fname}</Link>; // Replace '/somepath/${id}' with your desired link URL
+      return <Link href={`/dashboard/voters/${id}&&${munId}`}>{fname}</Link>;  // Replace '/somepath/${id}' with your desired link URL
     },
   },
   {
@@ -153,10 +144,57 @@ export const columns: ColumnDef<Voter>[] = [
     accessorKey: "prkname",
     header: "Purok Name",
   },
+
   {
     accessorKey: "member",
     header: "Member",
+    cell: ({ row }) => {
+      const memberValue = row.getValue("member") as string;
+
+      // Define the background color based on the value
+      let bgColor = "";
+      switch (memberValue) {
+        case "Yes":
+          bgColor = "bg-green-200";
+          break;
+        case "OFW":
+          bgColor = "bg-violet-200";
+          break;
+        case "Undecided":
+          bgColor = "bg-yellow-200";
+          break;
+        
+        case "Not":
+            bgColor = "bg-red-300";
+            break;
+        
+        case "Deceased":
+              bgColor = "bg-black";
+              break;
+
+        case "Possible":
+          bgColor = "bg-blue-200";
+          break;
+        default:
+          bgColor = "bg-gray-100"; // Default background color for undefined values
+      }
+
+      return (
+        <span
+          className={`${bgColor} px-2 py-1 rounded text-gray-800`}
+          style={{ display: "inline-block" }}
+        >
+          {memberValue}
+        </span>
+      );
+    },
   },
+
+  {
+    accessorKey: "phone",
+    header: "Mobile #",
+  },
+
   {
     accessorKey: "bar.barname",
     header: "Barangay",
@@ -166,9 +204,15 @@ export const columns: ColumnDef<Voter>[] = [
     header: "Coordinator",
     cell: ({ row }) => {
       const data = row.original as Voter; // Type assertion to access Voter object
-      return data.coor.id ? `${data.coor.lname} ` : "N/A";
+      return data.coor && data.coor.id ? `${data.coor.lname} ` : null ;
     },
   },
+
+  {
+    accessorKey: "remarks",
+    header: "Remarks",
+  },
+
 ];
 
 export function DataTable({ userIdd }: { userIdd: string }) {
@@ -184,7 +228,12 @@ export function DataTable({ userIdd }: { userIdd: string }) {
   const [t_data, setT_data] = useState(0)
   const [y_data, setY_data] = useState(0)
   const [th_data, setTh_data] = useState(0)
-
+  const [yes_count, setYes_count] = useState(0)
+  const [OFW_count, setOFW_count] = useState(0)
+  const [possible, setPossible] = useState(0)
+  const [no_count, setNo_count] = useState(0)
+  const [deceased_count, setDeceased_count] = useState(0)
+  const [undecided_count, setUndecided_count] = useState(0)
 
 
   useEffect(() => {
@@ -206,6 +255,13 @@ export function DataTable({ userIdd }: { userIdd: string }) {
         setT_data(responseData.today)
         setY_data(responseData.oneDayAgo)
         setTh_data(responseData.twoDaysAgo)
+        setYes_count(responseData.yes_count)
+        setOFW_count(responseData.OFW_count)
+        setPossible(responseData.possible_count)
+        setNo_count(responseData.no_count)
+        setDeceased_count(responseData.deceased_count)
+        setUndecided_count(responseData.undecided_count)
+
       } else {
         console.error("Failed to fetch municipality data");
       }
@@ -250,35 +306,61 @@ export function DataTable({ userIdd }: { userIdd: string }) {
 
   return (
     <div> 
-      <div className="flex flex-row justify-center"><BarGraph t_data={t_data} y_data={y_data} threeData={th_data} /></div>
-      <div className="flex flex-row justify-between items-center ">              
+       <div className="flex flex-row justify-between items-center mb-4 ">              
                 
-                  <div className="text-2xl font-bold">
-                    Municipality: {municipality?.munname}
-                  </div>
-                
-              
-              <div className="gap-3">
-              <Link href={`/dashboard/perBarangay/${munId}`}>
-                        <Button
-                          variant="outline"
-                          className="bg-green-900 text-white hover:bg-green-700"
-                        >
-                          All Barangays
-                        </Button>
-              </Link>
+                <div className="text-2xl font-bold">
+                  Municipality: {municipality?.munname}
+                  {/* Yes #: {yes_count} |
+                  OFW #: {OFW_count} |
+                  Possible #: {possible} */}
 
-              <Link href={`/dashboard/per_coordinator/${munId}`}>
-                        <Button
-                          variant="outline"
-                          className="bg-green-900 text-white hover:bg-green-700"
-                        >
-                          Coordinators
-                        </Button>
-              </Link>
-              </div>
+                </div>
+              
             
+            <div className="gap-3">
+            <Link href={`/dashboard/perBarangay/${munId}`}>
+                      <Button
+                        variant="outline"
+                        className="bg-green-900 text-white hover:bg-green-700"
+                      >
+                        All Barangays
+                      </Button>
+            </Link>
+
+            <Link href={`/dashboard/per_coordinator/${munId}`}>
+                      <Button
+                        variant="outline"
+                        className="bg-green-900 text-white hover:bg-green-700"
+                      >
+                        Coordinators
+                      </Button>
+            </Link>
+
+            
+            <Link href={`/dashboard/ayuda/${munId}`}>
+                      <Button
+                        variant="outline"
+                        className="bg-green-900 text-white hover:bg-green-700"
+                      >
+                        Ayuda
+                      </Button>
+            </Link>
+            </div>
+          
+    </div>
+
+      <div className="flex flex-row justify-center gap-3">
+        <BarGraph t_data={t_data} y_data={y_data} threeData={th_data} />
+        <Component ofw_data={undecided_count} title="Undecided" />
+       <Component ofw_data={yes_count} title="Yes/Ato-a" />
+       <Component ofw_data={possible} title="Possible?" />
+       <Component ofw_data={OFW_count} title="OFW Data" />
+       <Component ofw_data={no_count} title="Not" />
+       <Component ofw_data={deceased_count} title="Deceased" />
+
+
       </div>
+     
      
 
       <div className=" flex justify-between pt-2 pb-3 gap-4">

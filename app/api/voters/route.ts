@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     const data = await request.json()
 
     // Validate required fields
-    const {fname, lname, mname, prkname, member,userId, coorId,barId,munId } = data
+    const {fname, lname, mname, prkname, phone, remarks, member,userId, coorId,barId,munId } = data
     if (!lname || !fname || !mname || !prkname || !member || !coorId || !barId || !munId ) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
@@ -26,7 +26,9 @@ export async function POST(request: NextRequest) {
       data: {
         lname,
         fname,
-        mname, 
+        mname,
+        phone,
+        remarks, 
         prkname,
         member,
         userId,

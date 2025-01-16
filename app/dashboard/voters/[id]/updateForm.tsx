@@ -15,19 +15,50 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+
+
+
+
+interface Barangay {
+  id: string;
+  munId: string
+  barname: string;
+}
+
+interface Municipality {
+  id: string;
+  munname: string;
+  barangays: {
+    id: string
+    munId: string
+    barname: string
+  }[]
+  coordinators: {
+    id:string 
+    barId: string
+    lname: string 
+    fname: string
+  }[]   
+}
+
+interface Coordinator {
+  id: string;
+  barId: string
+  lname: string;
+  fname: string;
+}
+
 const UpdateVoterForm = () => {
 
-  // interface Voter {
-  //   id: string;
-  //   userId: string;
-  //   fname: string;
-  //   lname: string;
-  //   mname: string;
-  //   prkname: string;
-  //   member: string;
-  // }
+ 
+  const [municipalities, setMunicipalities] = useState<Municipality[]>([]);
+  const [coordinators, setCoordinators] = useState<Coordinator[]>([]);
+  const [originalCoordinators, setOriginalCoordinators] = useState<Coordinator[]>([]);
+  const [barangays, setBarangays] = useState<Barangay[]>([]);
+  const [munId, setMunId] = useState<string | null>(null);
+  const [voterId, setVoterId] = useState<string | null>(null);
 
-  // const [voter, setVoter] = useState<Voter | null>(null); // Single voter object
+
 
   const [loading, setLoading] = useState(true); // Track loading state
   const router = useRouter(); // Initialize useRouter
@@ -38,32 +69,55 @@ const UpdateVoterForm = () => {
     fname: "",
     lname: "",
     mname: "",
+    phone:"",
     prkname: "",
     member: "",
     barname:"",
-    userId: "",
+    remarks: "",
+    barId: "",
+    coorId: "",
+    munId: ""
   });
 
   useEffect(() => {
 
     setLoading(true)
 
+
+    const path = window.location.pathname.split("/").pop(); // Get the last part after "/"
+    const voterId = path?.split("&&")[0] || null; // Extract only the part before "&&"
+    setVoterId(voterId);
+
+    const pathMunId = window.location.pathname.split('&&').pop();
+    setMunId(pathMunId || null);
+  }, []);
+
+  useEffect(() => {
+
+    if (!voterId) return;
     const fetchVoter = async () => {
-      const voterId = window.location.pathname.split("/").pop();
+   
       try {
         const response = await fetch(`/api/voters/${voterId}`);
         if (response.ok) {
           const data = await response.json();
           // setVoter(data);
           setFormData({
-            fname: data.fname,
-            lname: data.lname,
-            mname: data.mname,
-            prkname: data.prkname,
-            member: data.member,
-            barname:data.bar.barname,
-            userId: data.userId,
+            fname: data.fname || "",
+            lname: data.lname || "",
+            mname: data.mname || "",
+            phone: data.phone || "",
+            prkname: data.prkname || "",
+            member: data.member || "",
+            barname:data.bar.barname || "",
+            remarks: data.remarks || "",
+            barId: "",
+            coorId: "",
+            munId:data.munId,
+            
           });
+
+
         } else {
           console.error("Failed to fetch voter data");
         }
@@ -75,7 +129,57 @@ const UpdateVoterForm = () => {
     };
 
     fetchVoter();
-  }, []);
+  }, [voterId]);
+
+ 
+  
+  useEffect(() => {
+    if (!munId) return;
+    const fetchMunicipality = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch(`/api/municipality/${munId}`);
+        if (response.ok) {
+          const data = await response.json();
+          // const municipalitiesData = Array.isArray(data) ? data : [data];
+          setMunicipalities([data]);
+          setBarangays(data.barangay);
+          //setCoordinators(data.coordinator);
+          setOriginalCoordinators(data.coordinator); // Preserve the original list
+
+
+        } else {
+
+          console.error("Failed to fetch municipality");
+
+        }
+      } catch (error) {
+        console.error("Error fetching municipality:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMunicipality();
+  }, [munId]);
+
+
+
+  const handleDropdownBarChange = (name: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "barId") {
+      // Find coordinators linked to the selected barangay
+  
+      const filteredCoordinators = originalCoordinators.filter(
+        (coordinator) => coordinator.barId === value
+      );
+      setCoordinators(filteredCoordinators); 
+      console.log(value)      
+
+    }
+  };
+  
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -89,6 +193,10 @@ const UpdateVoterForm = () => {
   const handleCancel = () => {
     router.back()
   }
+
+
+
+
 
   const handleUpdate = async (e: React.FormEvent) => {
 
@@ -105,6 +213,7 @@ const UpdateVoterForm = () => {
         body: JSON.stringify(formData),
       });
 
+       console.log('this is formData', formData)
       if (response.ok) {
         alert("Voter updated successfully!");
         router.back(); // Navigate back to the previous page
@@ -114,6 +223,8 @@ const UpdateVoterForm = () => {
     } catch (error) {
       console.error("Error updating voter:", error);
     }
+
+
   };
 
   if (loading) {
@@ -127,10 +238,7 @@ const UpdateVoterForm = () => {
 </div>;
   }
 
-  // if (!voter) {
-  //   return <p>Voter not found.</p>;
-  // }
-
+ 
   return (
     <div className="flex justify-center p-2">
        <Card className="w-full max-w-2xl mx-auto">
@@ -175,6 +283,20 @@ const UpdateVoterForm = () => {
             className="col-span-3"
           />
         </div>
+
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="mname" className="text-right">
+            Cellphone
+          </Label>
+          <Input
+            id="phone"
+            name="phone"
+            value={formData.phone}
+            onChange={handleInputChange}
+            className="col-span-3"
+          />
+        </div>
+
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="prkname" className="text-right">
             Purok
@@ -199,19 +321,96 @@ const UpdateVoterForm = () => {
               <SelectValue placeholder="Select Membership" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Yes">Yes</SelectItem>
-              <SelectItem value="No">No</SelectItem>
+             
+                     <SelectItem  value="Yes">Yes</SelectItem>
+                     <SelectItem  value="OFW">OFW</SelectItem>
+                     <SelectItem  value="Deceased">Deceased</SelectItem>
+                     <SelectItem  value="Undecided">Undecided</SelectItem>
+                     <SelectItem  value="Possible">Possible?</SelectItem>
+                     <SelectItem  value="Not">Not</SelectItem>
+
             </SelectContent>
           </Select>
         </div>
+
+
         <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="prkname" className="text-right">
-            Barangay
+  <Label htmlFor="municipality" className="text-right">
+    Municipality
+  </Label>
+  <Select
+    onValueChange={(value) => handleDropdownChange("munId", value)}
+    value={formData.munId}
+  >
+    <SelectTrigger className="col-span-3">
+      <SelectValue placeholder="Select Municipality" />
+    </SelectTrigger>
+    <SelectContent>
+      {municipalities.map((municipality) => (
+        <SelectItem key={municipality.id} value={municipality.id}>
+          {municipality.munname}
+        </SelectItem>
+      ))}
+    </SelectContent>
+  </Select>
+</div>
+
+
+         <div className="grid grid-cols-4 items-center gap-4">
+           <Label htmlFor="barangay" className="text-right">
+             Barangay
+           </Label>
+           <Select
+                 onValueChange={(value) => handleDropdownBarChange("barId", value)}
+                 value={formData.barId}
+               >
+                 <SelectTrigger className="col-span-3">
+                   <SelectValue placeholder="Select a barangay" />
+                 </SelectTrigger>
+                 <SelectContent>
+                   {barangays.map((barangay) => (
+                     <SelectItem key={barangay.id} value={barangay.id}>
+                       {barangay.barname}
+                     </SelectItem>
+                   ))}
+                 </SelectContent>
+               </Select>
+
+
+         </div>
+
+         <div className="grid grid-cols-4 items-center gap-4">
+           <Label htmlFor="coordinator" className="text-right">
+             Coordinator
+           </Label>
+
+           <Select
+                 onValueChange={(value) => handleDropdownChange("coorId", value)}
+                 value={formData.coorId}
+               >
+                 <SelectTrigger className="col-span-3">
+                   <SelectValue placeholder="Select a Coordinator" />
+                 </SelectTrigger>
+                 <SelectContent>
+                   {coordinators.map((items) => (
+                     <SelectItem key={items.id} value={items.id}>
+                       {items.lname}, {items.fname}
+                     </SelectItem>
+                   ))}
+                 </SelectContent>
+               </Select>
+           
+         </div>
+
+
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="mname" className="text-right">
+            Remarks
           </Label>
           <Input
-            id="barname"
-            name="barname"
-            value={formData.barname}
+            id="remarks"
+            name="remarks"
+            value={formData.remarks}
             onChange={handleInputChange}
             className="col-span-3"
           />

@@ -129,7 +129,7 @@ export const columns: ColumnDef<Voter>[] = [
       const munId = vts.munId
 
       const fname = row.getValue("fname") as string;
-      return <Link href={`/dashboard/voters/${id}&&${munId}`}>{fname}</Link>;  // Replace '/somepath/${id}' with your desired link URL
+      return <Link href={`/dashboard/voters/${id}&&${munId}`}><strong>{fname}</strong></Link>;  // Replace '/somepath/${id}' with your desired link URL
     },
   },
   {
@@ -309,7 +309,7 @@ export function DataTable({ userIdd }: { userIdd: string }) {
        <div className="flex flex-row justify-between items-center mb-4 ">              
                 
                 <div className="text-2xl font-bold">
-                  Municipality: {municipality?.munname}
+                  {municipality?.munname}
                   {/* Yes #: {yes_count} |
                   OFW #: {OFW_count} |
                   Possible #: {possible} */}
@@ -321,7 +321,7 @@ export function DataTable({ userIdd }: { userIdd: string }) {
             <Link href={`/dashboard/perBarangay/${munId}`}>
                       <Button
                         variant="outline"
-                        className="bg-green-900 text-white hover:bg-green-700"
+                        className="bg-blue-900 text-white hover:bg-blue-700"
                       >
                         All Barangays
                       </Button>
@@ -330,21 +330,21 @@ export function DataTable({ userIdd }: { userIdd: string }) {
             <Link href={`/dashboard/per_coordinator/${munId}`}>
                       <Button
                         variant="outline"
-                        className="bg-green-900 text-white hover:bg-green-700"
+                        className="bg-blue-900 text-white hover:bg-blue-700"
                       >
                         Coordinators
                       </Button>
             </Link>
 
-            
-            <Link href={`/dashboard/ayuda/${munId}`}>
+            <Link href={`/dashboard/allMunicipality`}>
                       <Button
                         variant="outline"
-                        className="bg-green-900 text-white hover:bg-green-700"
+                        className="bg-blue-900 text-white hover:bg-blue-700"
                       >
-                        Ayuda
+                       Over-all
                       </Button>
             </Link>
+
             </div>
           
     </div>

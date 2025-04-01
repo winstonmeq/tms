@@ -216,7 +216,7 @@ const CoorRegistrationPage = ({onClose,onSaveSuccess,userId,}: { onClose: () => 
             </SelectTrigger>
             <SelectContent>
               {municipalities.map((municipality) => (
-                <SelectItem key={municipality.id} value={municipality.id}>
+                <SelectItem key={municipality.id} value={municipality?.id}>
                   {municipality.munname}
                 </SelectItem>
               ))}

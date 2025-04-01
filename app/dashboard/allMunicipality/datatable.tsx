@@ -31,6 +31,7 @@ import {
 
 
 import { Progress } from "@/components/ui/progress"
+import Link from "next/link"
 
 
 // Define the structure for the perBarangayData
@@ -56,7 +57,14 @@ export const columns: ColumnDef<AllMunicipalityData>[] = [
   
   {
     accessorKey: "munname",
-    header: "Municipality",
+    header: "City/Municipality",
+    cell: ({ row }) => {
+      return (
+        <Link href={`/dashboard/perMunicipality/${row.original.munId}`}>
+         <strong>{row.getValue("munname")}</strong> 
+        </Link>
+      )
+    },
   },
 
   {
@@ -163,7 +171,7 @@ const data: AllMunicipalityData[] = allMun
  
   return (
     <div className="container mx-auto py-10">
-      All Municipality
+      All Voters Data
       <div className="rounded-md border">
 
       <div>
@@ -263,29 +271,6 @@ const data: AllMunicipalityData[] = allMun
         </div>
       </div>
 
-      {/* <div className="space-y-4">
-      {data.map((municipality) => {
-        // Calculate the progress percentage
-        const percentage =
-          Number(municipality.votersCount) > 0
-            ? (Number(municipality.votersMemberCount) / Number(municipality.votersCount)) * 100
-            : 0;
-
-        return (
-          <div key={municipality.munId} className="space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="font-medium text-sm text-gray-800">
-                {municipality.munname}
-              </span>
-              <span className="text-sm text-gray-600">
-                {municipality.votersMemberCount}/{municipality.votersCount}
-              </span>
-            </div>
-            <Progress value={percentage} className="h-4 bg-gray-200 rounded" />
-          </div>
-        );
-      })}
-    </div> */}
 
     </div>
   )

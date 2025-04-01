@@ -179,7 +179,7 @@ export function DataTable({ userId }: { userId: string }) {
           <div className="flex">
             
               <div className="text-xl font-bold items-center">
-                Municipality of: {coordinators[0]?.municipality?.munname}
+               {coordinators[0]?.municipality?.munname}
               </div>
           </div>
           <div className="flex gap-3">

@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/select"
 
 import { Progress } from "@/components/ui/progress"
+import { useRouter } from "next/navigation";
 
 
 
@@ -54,11 +55,7 @@ export const columns: ColumnDef<perBarangayData>[] = [
     },
 
   },
-  
-  {
-    accessorKey: "munname",
-    header: "Municipality",
-  },
+ 
   {
     accessorKey: "barname",
     header: "Barangay",
@@ -110,6 +107,8 @@ export function DataTable() {
 
   const [perBarangay, setPerBarangay] = useState<perBarangayData[]>([]) // Apply the Patient type here
   const [loading, setLoading] = useState(true) // Track loading state
+
+  const router = useRouter();
 
 // Fetch patients from the API endpoint
 const fetchMunicipality = async () => {
@@ -164,7 +163,11 @@ const data: perBarangayData[] = perBarangay
   return (
     <div >
       
-       <div className=" text-2xl font-bold">{perBarangay[0]?.munname}: Proportion of recruited members to total members</div>
+       <div className="flex text-2xl font-bold justify-between m-4">{perBarangay[0]?.munname}: Proportion of recruited members to total members
+       <Button onClick={()=>{router.back()}}>Back</Button>
+
+       </div>
+
       <div className="rounded-md border">
 
       {loading && (

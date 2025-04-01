@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     // Query for records created today (from start of today to the end of today)
     const recordsToday = await prisma.voter.findMany({
       where: {
-        munId: id,
+        // munId: id,
         createdAt: {
           gte: todayUTC,
           lt: endOfTodayUTC,
